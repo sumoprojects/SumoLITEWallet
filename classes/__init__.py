@@ -89,11 +89,6 @@ def set_default_settings(default_settings, settings):
 class AppSettings():
     settings = {}
     default_settings = {
-        "daemon": {
-            "log_level": 0,
-            "block_sync_size": 10
-        },
-        
         "blockchain": {
             "height": 0,
         },
@@ -113,17 +108,34 @@ class AppSettings():
             try:
                 self.settings = json.loads(readFile(self.app_settings_filepath))
             except Exception, err:
-                log("[AppSettings]>>> Load error:" + str(err), LEVEL_ERROR)
+                log("[AppSettings]>>> Load app config error: " + str(err), LEVEL_ERROR)
                 
         # Set default values:
         set_default_settings(self.default_settings, self.settings)
+        
+        # Validate values
+        try:
+            self.settings["blockchain"]["height"] = abs(int(self.settings["blockchain"]["height"]))
+        except:
+            self.settings["blockchain"]["height"] = self.default_settings["blockchain"]["height"]
+        
+        try:
+            self.settings["application"]["minimize_to_tray"] = bool(self.settings["application"]["minimize_to_tray"])
+        except:
+            self.settings["application"]["minimize_to_tray"] = self.default_settings["application"]["minimize_to_tray"]
+        
+        try:
+            self.settings["application"]["enable_ssl"] = bool(self.settings["application"]["enable_ssl"])
+        except:
+            self.settings["application"]["enable_ssl"] = self.default_settings["application"]["enable_ssl"]
+    
     
     def save(self):
         try:
             writeFile(self.app_settings_filepath, \
                 json.dumps(self.settings, indent=2))
         except Exception, err:
-            log("[AppSettings]>>> Save error:" + str(err), LEVEL_ERROR)
+            log("[AppSettings]>>> Save app config error: " + str(err), LEVEL_ERROR)
             return False
         
         return True
