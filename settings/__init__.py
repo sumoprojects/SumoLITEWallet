@@ -15,7 +15,7 @@ from utils.common import getHomeDir, makeDir
 
 USER_AGENT = "Sumo LITE Wallet"
 APP_NAME = "Sumo LITE Wallet"
-VERSION = [0, 1, 1]
+VERSION = [0, 1, 2]
 
 
 _data_dir = makeDir(os.path.join(getHomeDir(), 'SumoLITEWallet'))
